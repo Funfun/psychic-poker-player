@@ -1,0 +1,216 @@
+package main
+
+import (
+	"fmt"
+	"sort"
+	"strings"
+)
+
+// FindBestHand returns highest possible high-hand
+// category from the given hand and deck sets
+func FindBestHand(hand string, deck string) string {
+	handCards := *NewCards(hand)
+	deckCards := *NewCards(deck)
+
+	return HandCategoryName(Lookup(handCards, deckCards))
+}
+
+func Lookup(cards Cards, deckCards Cards) int {
+	var tmp Cards
+	var newRank int
+	var bestRank int
+
+	cardsCount := len(cards)
+	deckCardsCount := len(deckCards)
+
+	if cardsCount == 5 {
+		// assume initially the player has a good hand
+		bestRank = FindHandCategory(cards)
+	}
+
+	if deckCardsCount == 5 {
+		newRank = FindHandCategory(deckCards)
+		if newRank < bestRank {
+			bestRank = newRank
+		}
+	}
+
+	// looping revearsely
+	for i := 0; i < cardsCount-1; i++ {
+		// delete cards[i]
+
+		// look up best hand
+		for j := deckCardsCount - 1; j >= 0; j-- {
+			tmp2 := make(Cards, len(cards[:i]), cap(cards[:i]))
+			copy(tmp2, cards[:i])
+			tmp2 = append(tmp2, cards[i+1:]...)
+
+			tmp = append(tmp2, deckCards[0:j]...)
+			newRank = FindHandCategory(tmp)
+			if newRank < bestRank {
+				bestRank = newRank
+			}
+		}
+
+	}
+
+	return bestRank
+}
+
+// FindHandCategory returns
+func FindHandCategory(cards Cards) int {
+	sort.Sort(cards)
+
+	countPerSuit := map[int]int{1: 0, 2: 0, 3: 0, 4: 0}
+	gapCount := 0
+	nCards := len(cards)
+	countPerFaceValues := map[int]int{}
+
+	for i := 0; i < nCards; i++ {
+		countPerSuit[cards[i].Suit]++
+		countPerFaceValues[cards[i].Position]++
+
+		if i == nCards-1 {
+			break
+		}
+
+		if cards[i].Position != cards[i+1].Position+1 {
+			gapCount++
+		}
+	}
+
+	suitsCount := numberOfNonZeroElements(&countPerSuit)
+	if suitsCount == 1 {
+		if gapCount == 0 {
+			return HandCategoryRank("straight-flush")
+		}
+
+		return HandCategoryRank("flush")
+	} else if len(countPerFaceValues) == 2 && hasElement(&countPerFaceValues, 4) {
+		return HandCategoryRank("four-of-a-kind")
+	} else if hasElement(&countPerFaceValues, 2) && hasElement(&countPerFaceValues, 3) {
+		return HandCategoryRank("full-house")
+	} else if gapCount == 0 {
+		return HandCategoryRank("straight")
+	} else if len(countPerFaceValues) == 3 && hasElement(&countPerFaceValues, 3) && !hasElement(&countPerFaceValues, 2) {
+		return HandCategoryRank("three-of-a-kind")
+	} else if len(countPerFaceValues) == 3 && hasElement(&countPerFaceValues, 2) && hasElement(&countPerFaceValues, 1) {
+		return HandCategoryRank("two-pairs")
+	} else if len(countPerFaceValues) == 4 && hasElement(&countPerFaceValues, 2) && hasElement(&countPerFaceValues, 1) {
+		return HandCategoryRank("one-pair")
+	} else {
+		return HandCategoryRank("highest-card")
+	}
+
+}
+
+func numberOfNonZeroElements(suitsWithCount *map[int]int) int {
+	count := 0
+	for _, v := range *suitsWithCount {
+		if v > 0 {
+			count++
+		}
+	}
+
+	return count
+}
+
+func hasElement(suitsWithCount *map[int]int, elem int) bool {
+	found := false
+	for _, v := range *suitsWithCount {
+		if v == elem {
+			found = true
+			break
+		}
+	}
+
+	return found
+}
+
+// Card is abstruction of real world card from deck
+type Card struct {
+	Code     string
+	Position int
+	Suit     int
+}
+
+// NewCard returns ref to new instance of the Card
+// by parsing the code
+func NewCard(code string) *Card {
+	parsableCode := []rune(code)
+	position := faceValueToIndex[string(parsableCode[0])]
+	suit := suitToIndex[string(parsableCode[1])]
+	return &Card{code, position, suit}
+}
+
+// Cards is collection of ref to Card items
+type Cards []*Card
+
+func NewCards(rawInput string) *Cards {
+	cards := Cards{}
+	cardCodes := strings.Split(rawInput, " ")
+	for i := range cardCodes {
+		cards = append(cards, NewCard(cardCodes[i]))
+	}
+
+	return &cards
+}
+
+// Len is the number of elements in the collection.
+func (c Cards) Len() int {
+	return len(c)
+}
+
+// Less reports whether the element with
+// index i should sort before the element with index j.
+func (c Cards) Less(i, j int) bool {
+	return c[i].Position > c[j].Position
+}
+
+// Swap swaps the elements with indexes i and j.
+func (c Cards) Swap(i, j int) {
+	t := c[j]
+	c[j] = c[i]
+	c[i] = t
+}
+
+var faceValueToIndex map[string]int
+var suitToIndex map[string]int
+var HandCategories map[string]int
+
+// HandCategoryRank returns
+func HandCategoryRank(name string) int {
+	return HandCategories[name]
+}
+
+func HandCategoryName(rank int) string {
+	for k, v := range HandCategories {
+		if v == rank {
+			return k
+		}
+	}
+
+	return "not_found"
+}
+
+func init() {
+	faceValueToIndex = map[string]int{"2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9,
+		"T": 10, "J": 11, "Q": 12, "K": 13, "A": 14}
+	suitToIndex = map[string]int{"C": 1, "D": 2, "H": 3, "S": 4}
+
+	HandCategories = make(map[string]int, 9)
+	HandCategories["straight-flush"] = 1
+	HandCategories["four-of-a-kind"] = 2
+	HandCategories["full-house"] = 3
+	HandCategories["flush"] = 4
+	HandCategories["straight"] = 5
+	HandCategories["three-of-a-kind"] = 6
+	HandCategories["two-pairs"] = 7
+	HandCategories["one-pair"] = 8
+	HandCategories["highest-card"] = 9
+}
+
+func main() {
+	card := NewCard("4C")
+	fmt.Println(*card)
+}
