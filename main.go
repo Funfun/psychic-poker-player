@@ -66,7 +66,7 @@ func FindHandCategory(cards Cards) int {
 			break
 		}
 
-		if cards[i].Position != cards[i+1].Position+1 {
+		if cards[i].Position != cards[i+1].Position-1 {
 			gapCount++
 		}
 	}
@@ -156,7 +156,7 @@ func (c Cards) Len() int {
 // Less reports whether the element with
 // index i should sort before the element with index j.
 func (c Cards) Less(i, j int) bool {
-	return c[i].Position > c[j].Position
+	return c[i].Position < c[j].Position
 }
 
 // Swap swaps the elements with indexes i and j.
