@@ -29,7 +29,10 @@ func Lookup(cards Cards, deckCards Cards) int {
 	}
 
 	// check all deck cards
-	newRank = FindHandCategory(deckCards)
+	// copy to new slice to avoid shuffle
+	tmp := make(Cards, len(deckCards))
+	copy(tmp, deckCards)
+	newRank = FindHandCategory(tmp)
 	if HandCategoryRank("straight-flush") == newRank {
 		return HandCategoryRank("straight-flush")
 	}
