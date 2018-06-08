@@ -46,29 +46,29 @@ func TestFindBestHand(t *testing.T) {
 
 func TestFindHandCategory(t *testing.T) {
 	cards := []*Card{NewCard("JH"), NewCard("TH"), NewCard("QH"), NewCard("9H"), NewCard("8H")}
-	assert.Equal(t, HandCategoryRank("straight-flush"), FindHandCategory(cards))
+	assert.Equal(t, HandStraightFlush, FindHandCategory(cards))
 
 	cards = []*Card{NewCard("TH"), NewCard("TC"), NewCard("TD"), NewCard("TS"), NewCard("JS")}
-	assert.Equal(t, HandCategoryRank("four-of-a-kind"), FindHandCategory(cards))
+	assert.Equal(t, HandFourOfAKind, FindHandCategory(cards))
 
 	cards = []*Card{NewCard("3S"), NewCard("3H"), NewCard("3D"), NewCard("6C"), NewCard("6H")}
-	assert.Equal(t, HandCategoryRank("full-house"), FindHandCategory(cards))
+	assert.Equal(t, HandFullHouse, FindHandCategory(cards))
 
 	cards = []*Card{NewCard("JH"), NewCard("TH"), NewCard("QH"), NewCard("7H"), NewCard("2H")}
-	assert.Equal(t, HandCategoryRank("flush"), FindHandCategory(cards))
+	assert.Equal(t, HandFlush, FindHandCategory(cards))
 
 	cards = []*Card{NewCard("7S"), NewCard("6S"), NewCard("5S"), NewCard("4H"), NewCard("3H")}
-	assert.Equal(t, HandCategoryRank("straight"), FindHandCategory(cards))
+	assert.Equal(t, HandStraight, FindHandCategory(cards))
 
 	cards = []*Card{NewCard("2D"), NewCard("2S"), NewCard("2S"), NewCard("KS"), NewCard("6H")}
-	assert.Equal(t, HandCategoryRank("three-of-a-kind"), FindHandCategory(cards))
+	assert.Equal(t, HandThreeOfAKind, FindHandCategory(cards))
 
 	cards = []*Card{NewCard("JH"), NewCard("JS"), NewCard("4S"), NewCard("4H"), NewCard("9H")}
-	assert.Equal(t, HandCategoryRank("two-pairs"), FindHandCategory(cards))
+	assert.Equal(t, HandTwoPairs, FindHandCategory(cards))
 
 	cards = []*Card{NewCard("4H"), NewCard("4S"), NewCard("KS"), NewCard("TD"), NewCard("5S")}
-	assert.Equal(t, HandCategoryRank("one-pair"), FindHandCategory(cards))
+	assert.Equal(t, HandOnePair, FindHandCategory(cards))
 
 	cards = []*Card{NewCard("KH"), NewCard("JH"), NewCard("8S"), NewCard("7D"), NewCard("4S")}
-	assert.Equal(t, HandCategoryRank("highest-card"), FindHandCategory(cards))
+	assert.Equal(t, HandHighestCard, FindHandCategory(cards))
 }

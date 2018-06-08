@@ -29,8 +29,8 @@ func lookup(cards Cards, deckCards Cards) int {
 
 	// assume initially the player has a good hand
 	newRank = FindHandCategory(cards)
-	if HandCategoryRank("straight-flush") == bestRank {
-		return HandCategoryRank("straight-flush")
+	if HandStraightFlush == bestRank {
+		return HandStraightFlush
 	}
 	if newRank < bestRank {
 		bestRank = newRank
@@ -41,8 +41,8 @@ func lookup(cards Cards, deckCards Cards) int {
 	tmp := make(Cards, len(deckCards))
 	copy(tmp, deckCards)
 	newRank = FindHandCategory(tmp)
-	if HandCategoryRank("straight-flush") == newRank {
-		return HandCategoryRank("straight-flush")
+	if HandStraightFlush == newRank {
+		return HandStraightFlush
 	}
 
 	if newRank < bestRank {
@@ -53,7 +53,7 @@ func lookup(cards Cards, deckCards Cards) int {
 	for j := 1; j < len(deckCards); j++ {
 		r := len(deckCards) - j
 		data := make(Cards, r)
-		combinationUtil(cards, data, deckCards[:j], &bestRank, 0, n-1, 0, r)
+		cardCombinations(cards, data, deckCards[:j], &bestRank, 0, n-1, 0, r)
 	}
 
 	if newRank < bestRank {
@@ -63,11 +63,11 @@ func lookup(cards Cards, deckCards Cards) int {
 	return bestRank
 }
 
-// combinationUtil implements look up of +r+ possible
+// cardCombinations implements look up of +r+ possible
 // combimations of elements in the set with additional
 // ordered elements from other set to be used to find
 // the best poker hand rank among resulted combinations.
-func combinationUtil(inputSet Cards, result Cards, orderedSet Cards, handRank *int, start, end, index, r int) {
+func cardCombinations(inputSet Cards, result Cards, orderedSet Cards, handRank *int, start, end, index, r int) {
 	if index == r {
 		candidateCards := Cards{}
 		candidateCards = append(candidateCards, result[0:r]...)
@@ -82,7 +82,7 @@ func combinationUtil(inputSet Cards, result Cards, orderedSet Cards, handRank *i
 
 	for i := start; i <= end && end-i+1 >= r-index; i++ {
 		result[index] = inputSet[i]
-		combinationUtil(inputSet, result, orderedSet, handRank, i+1, end, index+1, r)
+		cardCombinations(inputSet, result, orderedSet, handRank, i+1, end, index+1, r)
 	}
 }
 
@@ -112,24 +112,24 @@ func FindHandCategory(cards Cards) int {
 
 	if suitsCount == 1 {
 		if gapCount == 0 {
-			return HandCategoryRank("straight-flush")
+			return HandStraightFlush
 		}
 
-		return HandCategoryRank("flush")
+		return HandFlush
 	} else if len(countPerFaceValues) == 2 && Included(countPerFaceValues, 4) {
-		return HandCategoryRank("four-of-a-kind")
+		return HandFourOfAKind
 	} else if Included(countPerFaceValues, 2) && Included(countPerFaceValues, 3) {
-		return HandCategoryRank("full-house")
+		return HandFullHouse
 	} else if gapCount == 0 {
-		return HandCategoryRank("straight")
+		return HandStraight
 	} else if len(countPerFaceValues) == 3 && Included(countPerFaceValues, 3) && !Included(countPerFaceValues, 2) {
-		return HandCategoryRank("three-of-a-kind")
+		return HandThreeOfAKind
 	} else if len(countPerFaceValues) == 3 && Included(countPerFaceValues, 2) && Included(countPerFaceValues, 1) {
-		return HandCategoryRank("two-pairs")
+		return HandTwoPairs
 	} else if len(countPerFaceValues) == 4 && Included(countPerFaceValues, 2) && Included(countPerFaceValues, 1) {
-		return HandCategoryRank("one-pair")
+		return HandOnePair
 	} else {
-		return HandCategoryRank("highest-card")
+		return HandHighestCard
 	}
 
 }
