@@ -21,7 +21,7 @@ func main() {
 	if len(os.Args) < 2 {
 		// when no file than use default
 		inputFileName = "./sample_input"
-		outputFileName = "./output/result"
+		outputFileName = "./output"
 	} else {
 		inputFileName = os.Args[1]
 		outputFileName = os.Args[2]
