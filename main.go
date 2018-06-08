@@ -55,9 +55,28 @@ func Lookup(cards Cards, deckCards Cards) int {
 	return bestRank
 }
 
-// FindHandCategory returns
+func combinationUtil(inputArray Cards, data Cards, deckArray Cards, handRank *int, start, end, index, r int) {
+	if index == r {
+		candidateCards := Cards{}
+		candidateCards = append(candidateCards, data[0:r]...)
+		candidateCards = append(candidateCards, deckArray...)
+		newRank := FindHandCategory(candidateCards)
+
+		if newRank < *handRank {
+			*handRank = newRank
+		}
+		return
+	}
+
+	for i := start; i <= end && end-i+1 >= r-index; i++ {
+		data[index] = inputArray[i]
+		combinationUtil(inputArray, data, deckArray, handRank, i+1, end, index+1, r)
+	}
+}
+
+// FindHandCategory returns best possible hand category
 func FindHandCategory(cards Cards) int {
-	sort.Sort(cards)
+	sort.Sort(cards) // mutation!
 
 	countPerSuit := map[int]int{1: 0, 2: 0, 3: 0, 4: 0}
 	gapCount := 0
@@ -208,23 +227,9 @@ func init() {
 	HandCategories["highest-card"] = 9
 }
 
-func combinationUtil(inputArray Cards, data Cards, deckArray Cards, handRank *int, start, end, index, r int) {
-	if index == r {
-		// fmt.Printf("%v + %v\n", data[0:r], deckArray)
-		candidateCards := Cards{}
-		candidateCards = append(candidateCards, data[0:r]...)
-		candidateCards = append(candidateCards, deckArray...)
-		newRank := FindHandCategory(candidateCards)
-		if newRank < *handRank {
-			*handRank = newRank
-			// fmt.Printf("newRank %d, handRank %d\n", newRank, handRank)
-		}
-		return
-	}
-
-	for i := start; i <= end && end-i+1 >= r-index; i++ {
-		data[index] = inputArray[i]
-		combinationUtil(inputArray, data, deckArray, handRank, i+1, end, index+1, r)
+func check(e error) {
+	if e != nil {
+		log.Fatal(e)
 	}
 }
 
