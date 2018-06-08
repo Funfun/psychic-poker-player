@@ -191,7 +191,7 @@ func init() {
 	HandCategories["highest-card"] = 9
 }
 
-func combinationUtil(inputArray Cards, data Cards, deckArray []string, start int, end int, index int, r int) {
+func combinationUtil(inputArray Cards, data Cards, deckArray Cards, start int, end int, index int, r int) {
 	if index == r {
 		fmt.Printf("%v + %v\n", data[0:r], deckArray)
 		return
@@ -203,7 +203,7 @@ func combinationUtil(inputArray Cards, data Cards, deckArray []string, start int
 	}
 }
 
-func printCombination(inputArray Cards, deckArray []string, r int) {
+func printCombination(inputArray Cards, deckArray Cards, r int) {
 	data := make(Cards, r)
 
 	n := len(inputArray)
@@ -211,7 +211,7 @@ func printCombination(inputArray Cards, deckArray []string, r int) {
 }
 
 func main() {
-	deckCards := []string{"TH", "JH", "QC", "QD", "QS"}
+	deckCards := *NewCards("TH JH QC QD QS")
 	arr := *NewCards("TH JH QC QD QS")
 
 	for j := 1; j < len(deckCards); j++ {
