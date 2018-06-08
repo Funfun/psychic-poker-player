@@ -45,7 +45,7 @@ func Lookup(cards Cards, deckCards Cards) int {
 	for j := 1; j < len(deckCards); j++ {
 		r := len(deckCards) - j
 		data := make(Cards, r)
-		combinationUtil(cards, data, deckCards[:j], &newRank, 0, n-1, 0, r)
+		combinationUtil(cards, data, deckCards[:j], &bestRank, 0, n-1, 0, r)
 	}
 
 	if newRank < bestRank {
