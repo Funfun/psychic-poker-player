@@ -35,6 +35,17 @@ func Lookup(cards Cards, deckCards Cards) int {
 		bestRank = newRank
 	}
 
+	n := len(cards)
+	for j := 1; j < len(deckCards); j++ {
+		r := len(deckCards) - j
+		data := make(Cards, r)
+		combinationUtil(cards, data, deckCards[:j], &newRank, 0, n-1, 0, r)
+	}
+
+	if newRank < bestRank {
+		bestRank = newRank
+	}
+
 	return bestRank
 }
 
@@ -191,34 +202,29 @@ func init() {
 	HandCategories["highest-card"] = 9
 }
 
-func combinationUtil(inputArray Cards, data Cards, deckArray Cards, start int, end int, index int, r int) {
+func combinationUtil(inputArray Cards, data Cards, deckArray Cards, handRank *int, start, end, index, r int) {
 	if index == r {
-		fmt.Printf("%v + %v\n", data[0:r], deckArray)
+		// fmt.Printf("%v + %v\n", data[0:r], deckArray)
 		candidateCards := Cards{}
 		candidateCards = append(candidateCards, data[0:r]...)
 		candidateCards = append(candidateCards, deckArray...)
-		FindHandCategory(candidateCards)
+		newRank := FindHandCategory(candidateCards)
+		if newRank < *handRank {
+			*handRank = newRank
+			// fmt.Printf("newRank %d, handRank %d\n", newRank, handRank)
+		}
 		return
 	}
 
 	for i := start; i <= end && end-i+1 >= r-index; i++ {
 		data[index] = inputArray[i]
-		combinationUtil(inputArray, data, deckArray, i+1, end, index+1, r)
+		combinationUtil(inputArray, data, deckArray, handRank, i+1, end, index+1, r)
 	}
-}
-
-func printCombination(inputArray Cards, deckArray Cards, r int) {
-	data := make(Cards, r)
-
-	n := len(inputArray)
-	combinationUtil(inputArray, data, deckArray, 0, n-1, 0, r)
 }
 
 func main() {
-	deckCards := *NewCards("TH JH QC QD QS")
+	deckCards := *NewCards("QH KH AH 2S 6S")
 	arr := *NewCards("TH JH QC QD QS")
 
-	for j := 1; j < len(deckCards); j++ {
-		printCombination(arr, deckCards[:j], len(deckCards)-j)
-	}
+	fmt.Printf("bestRank = %s", HandCategoryName(Lookup(arr, deckCards)))
 }
