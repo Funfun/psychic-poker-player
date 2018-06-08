@@ -16,42 +16,23 @@ func FindBestHand(hand string, deck string) string {
 }
 
 func Lookup(cards Cards, deckCards Cards) int {
-	var tmp Cards
 	var newRank int
 	var bestRank int
 
-	cardsCount := len(cards)
-	deckCardsCount := len(deckCards)
-
-	if cardsCount == 5 {
-		// assume initially the player has a good hand
-		bestRank = FindHandCategory(cards)
+	// assume initially the player has a good hand
+	bestRank = FindHandCategory(cards)
+	if HandCategoryRank("straight-flush") == bestRank {
+		return HandCategoryRank("straight-flush")
 	}
 
-	if deckCardsCount == 5 {
-		newRank = FindHandCategory(deckCards)
-		if newRank < bestRank {
-			bestRank = newRank
-		}
+	// check all deck cards
+	newRank = FindHandCategory(deckCards)
+	if HandCategoryRank("straight-flush") == newRank {
+		return HandCategoryRank("straight-flush")
 	}
 
-	// looping revearsely
-	for i := 0; i < cardsCount-1; i++ {
-		// delete cards[i]
-
-		// look up best hand
-		for j := deckCardsCount - 1; j >= 0; j-- {
-			tmp2 := make(Cards, len(cards[:i]), cap(cards[:i]))
-			copy(tmp2, cards[:i])
-			tmp2 = append(tmp2, cards[i+1:]...)
-
-			tmp = append(tmp2, deckCards[0:j]...)
-			newRank = FindHandCategory(tmp)
-			if newRank < bestRank {
-				bestRank = newRank
-			}
-		}
-
+	if newRank < bestRank {
+		bestRank = newRank
 	}
 
 	return bestRank
@@ -210,7 +191,30 @@ func init() {
 	HandCategories["highest-card"] = 9
 }
 
+func combinationUtil(inputArray Cards, data Cards, deckArray []string, start int, end int, index int, r int) {
+	if index == r {
+		fmt.Printf("%v + %v\n", data[0:r], deckArray)
+		return
+	}
+
+	for i := start; i <= end && end-i+1 >= r-index; i++ {
+		data[index] = inputArray[i]
+		combinationUtil(inputArray, data, deckArray, i+1, end, index+1, r)
+	}
+}
+
+func printCombination(inputArray Cards, deckArray []string, r int) {
+	data := make(Cards, r)
+
+	n := len(inputArray)
+	combinationUtil(inputArray, data, deckArray, 0, n-1, 0, r)
+}
+
 func main() {
-	card := NewCard("4C")
-	fmt.Println(*card)
+	deckCards := []string{"TH", "JH", "QC", "QD", "QS"}
+	arr := *NewCards("TH JH QC QD QS")
+
+	for j := 1; j < len(deckCards); j++ {
+		printCombination(arr, deckCards[:j], len(deckCards)-j)
+	}
 }
