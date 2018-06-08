@@ -194,6 +194,10 @@ func init() {
 func combinationUtil(inputArray Cards, data Cards, deckArray Cards, start int, end int, index int, r int) {
 	if index == r {
 		fmt.Printf("%v + %v\n", data[0:r], deckArray)
+		candidateCards := Cards{}
+		candidateCards = append(candidateCards, data[0:r]...)
+		candidateCards = append(candidateCards, deckArray...)
+		FindHandCategory(candidateCards)
 		return
 	}
 
