@@ -97,13 +97,13 @@ func FindHandCategory(cards Cards) int {
 
 	for i := 0; i < nCards; i++ {
 		countPerSuit[cards[i].Suit]++
-		countPerFaceValues[cards[i].Position]++
+		countPerFaceValues[cards[i].FaceValue]++
 
 		if i == nCards-1 {
 			break
 		}
 
-		if cards[i].Position != cards[i+1].Position+1 {
+		if cards[i].FaceValue != cards[i+1].FaceValue+1 {
 			gapCount++
 		}
 	}

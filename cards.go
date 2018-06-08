@@ -24,7 +24,7 @@ func (c Cards) Len() int {
 // Less reports whether the element with
 // index i should sort before the element with index j.
 func (c Cards) Less(i, j int) bool {
-	return c[i].Position > c[j].Position
+	return c[i].FaceValue > c[j].FaceValue
 }
 
 // Swap swaps the elements with indexes i and j.
