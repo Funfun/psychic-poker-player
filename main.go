@@ -17,12 +17,15 @@ func FindBestHand(hand string, deck string) string {
 
 func Lookup(cards Cards, deckCards Cards) int {
 	var newRank int
-	var bestRank int
+	bestRank := 9
 
 	// assume initially the player has a good hand
-	bestRank = FindHandCategory(cards)
+	newRank = FindHandCategory(cards)
 	if HandCategoryRank("straight-flush") == bestRank {
 		return HandCategoryRank("straight-flush")
+	}
+	if newRank < bestRank {
+		bestRank = newRank
 	}
 
 	// check all deck cards
