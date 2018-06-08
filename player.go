@@ -19,7 +19,19 @@ func FindBestHand(hand string, deck string) string {
 	handCards := *NewCards(hand)
 	deckCards := *NewCards(deck)
 
-	return HandCategoryName(lookup(handCards, deckCards))
+	bestRankWithAceHigh := lookup(handCards, deckCards)
+
+	faceValueToIndex["A"] = 1
+	bestRankWithAceLow := lookup(handCards, deckCards)
+
+	var bestRank int
+	if bestRankWithAceHigh > bestRankWithAceLow {
+		bestRank = bestRankWithAceHigh
+	} else {
+		bestRank = bestRankWithAceLow
+	}
+
+	return HandCategoryName(bestRank)
 }
 
 // lookup does look up of the best possible hand combination
