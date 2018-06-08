@@ -25,7 +25,7 @@ func FindBestHand(hand string, deck string) string {
 // lookup does look up of the best possible hand combination
 func lookup(cards Cards, deckCards Cards) int {
 	var newRank int
-	bestRank := 9
+	bestRank := HandHighestCard
 
 	// assume initially the player has a good hand
 	newRank = FindHandCategory(cards)
