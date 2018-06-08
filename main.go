@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"log"
+	"os"
 	"sort"
 	"strings"
 )
@@ -234,8 +237,32 @@ func check(e error) {
 }
 
 func main() {
-	deckCards := *NewCards("QH KH AH 2S 6S")
-	arr := *NewCards("TH JH QC QD QS")
+	var filename string
+	// read input file from argument
+	if len(os.Args) < 2 {
+		// when no file than use default
+		filename = "./sample_input"
+	} else {
+		filename = os.Args[1]
+	}
 
-	fmt.Printf("bestRank = %s", HandCategoryName(Lookup(arr, deckCards)))
+	f, err := os.Open(filename)
+	check(err)
+
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		line := []rune(scanner.Text())
+		hand := string(line[:14])
+		deck := string(line[15:])
+
+		bestHand := FindBestHand(hand, deck)
+		fmt.Printf("Hand: %s Deck: %s Best hand: %s\n", hand, deck, bestHand)
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
 }
