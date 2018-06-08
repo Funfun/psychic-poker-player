@@ -31,10 +31,11 @@ func FindBestHand(hand string, deck string) string {
 	handCards := *NewCards(hand)
 	deckCards := *NewCards(deck)
 
-	return HandCategoryName(Lookup(handCards, deckCards))
+	return HandCategoryName(lookup(handCards, deckCards))
 }
 
-func Lookup(cards Cards, deckCards Cards) int {
+// lookup does look up of the best possible hand combination
+func lookup(cards Cards, deckCards Cards) int {
 	var newRank int
 	bestRank := 9
 
@@ -74,11 +75,15 @@ func Lookup(cards Cards, deckCards Cards) int {
 	return bestRank
 }
 
-func combinationUtil(inputArray Cards, data Cards, deckArray Cards, handRank *int, start, end, index, r int) {
+// combinationUtil implements look up of +r+ possible
+// combimations of elements in the set with additional
+// ordered elements from other set to be used to find
+// the best poker hand rank among resulted combinations.
+func combinationUtil(inputSet Cards, result Cards, orderedSet Cards, handRank *int, start, end, index, r int) {
 	if index == r {
 		candidateCards := Cards{}
-		candidateCards = append(candidateCards, data[0:r]...)
-		candidateCards = append(candidateCards, deckArray...)
+		candidateCards = append(candidateCards, result[0:r]...)
+		candidateCards = append(candidateCards, orderedSet...)
 		newRank := FindHandCategory(candidateCards)
 
 		if newRank < *handRank {
@@ -88,8 +93,8 @@ func combinationUtil(inputArray Cards, data Cards, deckArray Cards, handRank *in
 	}
 
 	for i := start; i <= end && end-i+1 >= r-index; i++ {
-		data[index] = inputArray[i]
-		combinationUtil(inputArray, data, deckArray, handRank, i+1, end, index+1, r)
+		result[index] = inputSet[i]
+		combinationUtil(inputSet, result, orderedSet, handRank, i+1, end, index+1, r)
 	}
 }
 
@@ -141,11 +146,12 @@ func FindHandCategory(cards Cards) int {
 
 }
 
-// HandCategoryRank returns
+// HandCategoryRank acts as getter for handCategories
 func HandCategoryRank(name string) int {
 	return handCategories[name]
 }
 
+// HandCategoryName does reverse look up of value of handCategories
 func HandCategoryName(rank int) string {
 	for k, v := range handCategories {
 		if v == rank {

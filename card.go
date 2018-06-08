@@ -2,9 +2,9 @@ package main
 
 // Card is abstruction of real world card from deck
 type Card struct {
-	Code     string
-	Position int
-	Suit     int
+	Code     string // two-character code combination of face-value & suit
+	Position int    // face-value (A=Ace, 2-9, T=10, J=Jack, Q=Queen, K=King)
+	Suit     int    // suit (C=Clubs, D=Diamonds, H=Hearts, S=Spades)
 }
 
 // NewCard returns ref to new instance of the Card
