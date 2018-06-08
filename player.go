@@ -4,7 +4,6 @@ import "sort"
 
 var faceValueToIndex map[string]int
 var suitToIndex map[string]int
-var handCategories map[string]int
 
 func init() {
 	faceValueToIndex = map[string]int{
@@ -12,17 +11,6 @@ func init() {
 		"8": 8, "9": 9, "T": 10, "J": 11, "Q": 12, "K": 13, "A": 14,
 	}
 	suitToIndex = map[string]int{"C": 1, "D": 2, "H": 3, "S": 4}
-
-	handCategories = make(map[string]int, 9)
-	handCategories["straight-flush"] = 1
-	handCategories["four-of-a-kind"] = 2
-	handCategories["full-house"] = 3
-	handCategories["flush"] = 4
-	handCategories["straight"] = 5
-	handCategories["three-of-a-kind"] = 6
-	handCategories["two-pairs"] = 7
-	handCategories["one-pair"] = 8
-	handCategories["highest-card"] = 9
 }
 
 // FindBestHand returns highest possible high-hand
@@ -144,20 +132,4 @@ func FindHandCategory(cards Cards) int {
 		return HandCategoryRank("highest-card")
 	}
 
-}
-
-// HandCategoryRank acts as getter for handCategories
-func HandCategoryRank(name string) int {
-	return handCategories[name]
-}
-
-// HandCategoryName does reverse look up of value of handCategories
-func HandCategoryName(rank int) string {
-	for k, v := range handCategories {
-		if v == rank {
-			return k
-		}
-	}
-
-	return "not_found"
 }
