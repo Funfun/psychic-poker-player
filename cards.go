@@ -5,6 +5,7 @@ import "strings"
 // Cards is collection of ref to Card items
 type Cards []*Card
 
+// NewCards retruns a new Cards ref
 func NewCards(rawInput string) *Cards {
 	cards := Cards{}
 	cardCodes := strings.Split(rawInput, " ")
