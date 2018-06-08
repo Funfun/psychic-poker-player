@@ -1,4 +1,4 @@
-# Psychic Poker Player
+# The Psychic Poker Player
 
 usage:
 
