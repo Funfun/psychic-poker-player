@@ -120,7 +120,7 @@ func FindHandCategory(cards Cards) int {
 		}
 	}
 
-	suitsCount := Count(&countPerSuit)
+	suitsCount := Count(countPerSuit)
 
 	if suitsCount == 1 {
 		if gapCount == 0 {
@@ -128,17 +128,17 @@ func FindHandCategory(cards Cards) int {
 		}
 
 		return HandCategoryRank("flush")
-	} else if len(countPerFaceValues) == 2 && Filter(&countPerFaceValues, 4) {
+	} else if len(countPerFaceValues) == 2 && Included(countPerFaceValues, 4) {
 		return HandCategoryRank("four-of-a-kind")
-	} else if Filter(&countPerFaceValues, 2) && Filter(&countPerFaceValues, 3) {
+	} else if Included(countPerFaceValues, 2) && Included(countPerFaceValues, 3) {
 		return HandCategoryRank("full-house")
 	} else if gapCount == 0 {
 		return HandCategoryRank("straight")
-	} else if len(countPerFaceValues) == 3 && Filter(&countPerFaceValues, 3) && !Filter(&countPerFaceValues, 2) {
+	} else if len(countPerFaceValues) == 3 && Included(countPerFaceValues, 3) && !Included(countPerFaceValues, 2) {
 		return HandCategoryRank("three-of-a-kind")
-	} else if len(countPerFaceValues) == 3 && Filter(&countPerFaceValues, 2) && Filter(&countPerFaceValues, 1) {
+	} else if len(countPerFaceValues) == 3 && Included(countPerFaceValues, 2) && Included(countPerFaceValues, 1) {
 		return HandCategoryRank("two-pairs")
-	} else if len(countPerFaceValues) == 4 && Filter(&countPerFaceValues, 2) && Filter(&countPerFaceValues, 1) {
+	} else if len(countPerFaceValues) == 4 && Included(countPerFaceValues, 2) && Included(countPerFaceValues, 1) {
 		return HandCategoryRank("one-pair")
 	} else {
 		return HandCategoryRank("highest-card")
