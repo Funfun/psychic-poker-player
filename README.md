@@ -21,7 +21,7 @@ For sample run skip arguments and just run a binary.
 
 testing:
 ```
-go get github.com/stretchr/testify/assert
+go get github.com/stretchr/testify
 go test
 ```
 
