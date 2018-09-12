@@ -1,5 +1,7 @@
 # The Psychic Poker Player
 
+Rules: read them here https://github.com/Funfun/psychic-poker-player/blob/master/game_rules.md
+
 usage:
 
 1. compile
